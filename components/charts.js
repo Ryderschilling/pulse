@@ -60,13 +60,16 @@ export function LineChart({ data = [], series = [], height = 220, yFormat = num,
         {paths.map(({ s, area }) => s.area && (
           <path key={s.key + "a"} d={area} fill={s.color} opacity="0.08" />
         ))}
-        {paths.map(({ s, line }) => (
+        {paths.filter(({ s }) => s.thin).map(({ s, line }) => (
+          <path key={s.key} d={line} fill="none" stroke={s.color} strokeWidth="1.2" opacity="0.5" strokeLinejoin="round" strokeLinecap="round" />
+        ))}
+        {paths.filter(({ s }) => !s.thin).map(({ s, line }) => (
           <path key={s.key} d={line} fill="none" stroke={s.color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
         ))}
         {hover != null && (
           <g>
             <line x1={hx} x2={hx} y1={padT} y2={H - padB} stroke="var(--faint)" strokeWidth="1" strokeDasharray="3 3" />
-            {paths.map(({ s, pts }) => (
+            {paths.filter(({ s }) => !s.thin).map(({ s, pts }) => (
               <circle key={s.key} cx={pts[hover][0]} cy={pts[hover][1]} r="4.5" fill={s.color} stroke="var(--panel)" strokeWidth="2" />
             ))}
           </g>
@@ -81,7 +84,7 @@ export function LineChart({ data = [], series = [], height = 220, yFormat = num,
         </div>
       )}
       {series.length > 1 && (
-        <div className="legend">{series.map((s) => <span key={s.key}><i style={{ background: s.color }} />{s.label}</span>)}</div>
+        <div className="legend">{series.map((s) => <span key={s.key} style={s.thin ? { opacity: 0.7 } : undefined}><i style={{ background: s.color }} />{s.label}</span>)}</div>
       )}
     </div>
   );

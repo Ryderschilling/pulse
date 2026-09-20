@@ -153,6 +153,15 @@ export default function App() {
         <main>
           <div className="wrap">
             {error && <div className="card" style={{ borderColor: "#3a2626", color: "var(--red)", marginBottom: 14 }}>{error}</div>}
+            {site && view !== "settings" && view !== "portfolio" && site.health === "silent" && (
+              <div className="card" style={{ borderColor: "#3a2626", marginBottom: 14, display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
+                <div style={{ flex: 1, minWidth: 240 }}><b style={{ color: "var(--red)" }}>{site.name} has sent nothing for {site.days_silent} days.</b><div className="muted" style={{ fontSize: 13, marginTop: 2 }}>A quiet site usually means the tag fell off (a redesign, a platform move, a GTM change), not a quiet month. Press Check in Sites & setup to confirm the snippet is still on the live page.</div></div>
+                <button className="btn" onClick={() => setView("settings")}>Check the site</button>
+              </div>
+            )}
+            {site && view !== "settings" && view !== "portfolio" && site.health === "no_data" && (
+              <div className="note" style={{ marginTop: -4, marginBottom: 12 }}>Nothing recorded for {site.name} yet. Everything below is empty until the snippet is on the live site{site.ga4_property_id ? "" : " or a GA4 property id is set"}.</div>
+            )}
             {view === "settings" ? (
               <Settings sites={sites || []} reload={loadSites} select={setSiteId} showToast={showToast} />
             ) : view === "portfolio" ? (

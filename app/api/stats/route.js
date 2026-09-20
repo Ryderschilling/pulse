@@ -18,12 +18,17 @@ export async function GET(req) {
     try { return NextResponse.json(p.get("window") === "all" ? await S.portfolioAll() : await S.portfolio(p.get("window") || 60)); }
     catch (e) { console.error(e); return NextResponse.json({ error: e.message }, { status: 500 }); }
   }
-  if (!siteId || !DAY.test(from || "") || !DAY.test(to || "")) {
-    return NextResponse.json({ error: "site, from, to required" }, { status: 400 });
-  }
+  if (!siteId) return NextResponse.json({ error: "site required" }, { status: 400 });
   const [site] = await q("select * from sites where id=$1", [siteId]);
   if (!site) return NextResponse.json({ error: "site not found" }, { status: 404 });
   const tz = site.timezone || "America/Chicago";
+  if (view === "history") {
+    try { return NextResponse.json({ site, months: await S.history(siteId, tz, Number(p.get("months")) || 12) }); }
+    catch (e) { console.error(e); return NextResponse.json({ error: e.message }, { status: 500 }); }
+  }
+  if (!DAY.test(from || "") || !DAY.test(to || "")) {
+    return NextResponse.json({ error: "site, from, to required" }, { status: 400 });
+  }
 
   try {
     const out = { site, from, to };
@@ -51,7 +56,8 @@ export async function GET(req) {
     } else if (view === "flows") {
       out.flows = await S.flows(siteId, from, to, tz);
     } else if (view === "sources") {
-      out.sources = await S.sources(siteId, from, to, tz);
+      const [sources, summary] = await Promise.all([S.sources(siteId, from, to, tz), S.summary(siteId, from, to, tz)]);
+      Object.assign(out, { sources, summary });
     }
     return NextResponse.json(out);
   } catch (e) {

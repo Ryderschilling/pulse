@@ -2,13 +2,17 @@ import { NextResponse } from "next/server";
 import { expectedToken, COOKIE_NAME, SESSION_MAX_AGE } from "./lib/token";
 
 // Everything is gated except: login, auth API, the public snippet, the collect
-// endpoint the snippet posts to, and Next internals.
+// endpoint the snippet posts to, the lead webhook and Twilio callbacks (each
+// has its own secret), the cron (CRON_SECRET), and Next internals.
 export async function middleware(req) {
   const { pathname } = req.nextUrl;
   const isPublic =
     pathname.startsWith("/login") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/collect") ||
+    pathname.startsWith("/api/lead") ||
+    pathname.startsWith("/api/twilio/") ||
+    pathname.startsWith("/api/cron/") ||
     pathname === "/p.js" ||
     pathname.startsWith("/_next") ||
     pathname === "/favicon.ico";
