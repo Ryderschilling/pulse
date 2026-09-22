@@ -42,7 +42,7 @@ export async function POST(req) {
   await q(
     `insert into events (site_id, type, path, title, visitor_id, session_id, label, href, device, meta)
      values ($1,$2,$3,'',$4,$5,$6,'', '', $7::jsonb)`,
-    [site.id, kind, s(b.path, 300) || "", visitor, session, s(b.name, 120) || s(b.source, 60) || "Lead", JSON.stringify({ lead_id: lead.id, confirmed: true })]
+    [site.id, kind === "email" ? "form" : kind, s(b.path, 300) || "", visitor, session, s(b.name, 120) || s(b.source, 60) || "Lead", JSON.stringify({ lead_id: lead.id, confirmed: true })]
   );
   return NextResponse.json({ ok: true, id: lead.id }, { headers: CORS });
 }

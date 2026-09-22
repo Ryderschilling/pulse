@@ -24,7 +24,7 @@ export default function Overview({ site, range, data, loading, go }) {
         <Kpi label="Engaged visits" icon={<Zap size={13} />} value={s.engaged_sessions} prev={p.engaged_sessions} tone="accent" sub={`of ${num(s.sessions)} visits · ${s.sessions ? pct(s.engaged_sessions, s.sessions, 0) : "—"} · 2+ pages, 10s+, or a lead`} />
         <Kpi label="Visitors" icon={<Users size={13} />} value={s.visitors} prev={p.visitors} sub={`${num(s.sessions)} sessions · ${num(s.pageviews)} views`} />
         <Kpi label="Calls" icon={<PhoneCall size={13} />} value={ga4Only && !tracked ? null : s.calls} prev={ga4Only && !tracked ? undefined : p.calls} tone="green" sub={tracked ? `tracked calls${s.call_taps ? ` · ${num(s.call_taps)} taps` : ""}` : ga4Only ? "unknown: GA4 cannot see phone taps" : "phone taps, one per visit"} />
-        <Kpi label="Forms" icon={<FileText size={13} />} value={s.forms} prev={p.forms} sub={`${webhook ? "confirmed sends" : "submits"} · ${num(s.emails)} emails · ${num(s.bookings)} bookings`} />
+        <Kpi label="Forms" icon={<FileText size={13} />} value={s.forms} prev={p.forms} sub={`${webhook ? "confirmed sends" : "submits"} + email taps · ${num(s.bookings)} bookings`} />
         <Kpi label="Conversion rate" icon={<Percent size={13} />} value={s.visitors ? convRate * 100 : null} prev={p.visitors ? prevRate * 100 : undefined} format={(v) => v.toFixed(1) + "%"} sub={`${num(s.conversions)} leads from ${num(s.visitors)} visitors`} />
         <Kpi label="Time on page" icon={<Timer size={13} />} value={s.avg_seconds} prev={p.avg_seconds} format={secs} sub={s.avg_scroll != null ? `${s.avg_scroll}% avg scroll` : s.ga_days ? "Pulse days only" : ""} />
       </div>

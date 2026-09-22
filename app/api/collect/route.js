@@ -99,9 +99,13 @@ export async function POST(req) {
     if (type === "call" && hasTracking) type = "call_tap";
     // With the lead webhook, the real form is the one the handler confirms.
     if (type === "form" && formsViaWebhook) type = "form_attempt";
+    // Email taps count as forms (Ryder, 09-21). Done after the webhook check so
+    // a mailto: tap is always a real form lead, never a form_attempt.
+    const viaEmail = type === "email";
+    if (viaEmail) type = "form";
     let path = s(e.p, 300) || "/";
     if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
-    const meta = e.sc != null ? { scroll: Number(e.sc) || 0 } : null;
+    const meta = e.sc != null || viaEmail ? { ...(e.sc != null ? { scroll: Number(e.sc) || 0 } : {}), ...(viaEmail ? { via: "email" } : {}) } : null;
     rows.push([
       site, type, path, s(e.ti, 160), vid, sid, ref, host(ref),
       s(utm.utm_source, 80), s(utm.utm_medium, 80), s(utm.utm_campaign, 120),

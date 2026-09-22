@@ -43,11 +43,10 @@ export default function Conversions({ site, data, loading }) {
 
   return (
     <div className="fade-in">
-      <PageHead title="Conversions" sub={`${site.domain} · one lead per visit per type: calls, forms, emails, bookings, and the page it happened on`} />
+      <PageHead title="Conversions" sub={`${site.domain} · one lead per visit per type: calls, forms (email taps included), bookings, and the page it happened on`} />
       <div className="kpi-grid">
         <Kpi label={tracked ? "Calls (tracked)" : "Calls"} icon={ICONS.call} value={s.calls} prev={p.calls} tone="green" sub={tracked ? `${answered.length} answered · ${calls.length - answered.length} missed` : s.call_taps ? `${num(s.call_taps)} taps recorded` : "phone taps"} />
-        <Kpi label="Forms" icon={ICONS.form} value={s.forms} prev={p.forms} tone="accent" sub={webhook ? "confirmed by the site" : s.form_attempts ? `${num(s.form_attempts)} attempts` : "submits"} />
-        <Kpi label="Emails" icon={ICONS.email} value={s.emails} prev={p.emails} />
+        <Kpi label="Forms" icon={ICONS.form} value={s.forms} prev={p.forms} tone="accent" sub={`${webhook ? "confirmed by the site" : s.form_attempts ? `${num(s.form_attempts)} attempts` : "submits"} + email taps`} />
         <Kpi label="Bookings" icon={ICONS.booking} value={s.bookings} prev={p.bookings} />
         <Kpi label="Texts" icon={ICONS.sms} value={s.sms} prev={p.sms} />
         <Kpi label="Per 100 visitors" value={s.visitors ? (s.conversions / s.visitors) * 100 : null} prev={p.visitors ? (p.conversions / p.visitors) * 100 : undefined} format={(v) => v.toFixed(1)} sub={`${num(s.conversions)} leads total`} />
